@@ -1,0 +1,79 @@
+﻿.print-zone {
+    display: none;
+}
+
+.printer-qr-preview {
+    width: 40px;
+    image-rendering: pixelated;
+}
+
+
+/*print*/
+
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+
+    body * {
+        visibility: hidden;
+        height: 0;
+        margin: 0;
+    }
+
+    .print-zone,
+    .print-zone * {
+        visibility: visible;
+        height: auto;
+    }
+
+    .print-zone {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6mm;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .print-sticker {
+        border: 0.3mm solid #000;
+        padding: 4mm;
+        display: flex;
+        align-items: center;
+        gap: 4mm;
+        page-break-inside: avoid;
+        height: 35mm;
+        box-sizing: border-box;
+        background: white;
+    }
+
+    .qr-wrapper img {
+        width: 28mm;
+        height: 28mm;
+        image-rendering: pixelated;
+    }
+
+    .info-wrapper {
+        font-family: Arial, sans-serif;
+        line-height: 1.2;
+    }
+
+    .p-id {
+        font-size: 11pt;
+        font-weight: bold;
+    }
+
+    .p-model {
+        font-size: 10pt;
+    }
+
+    .p-ip {
+        font-size: 8pt;
+        color: #555;
+    }
+}

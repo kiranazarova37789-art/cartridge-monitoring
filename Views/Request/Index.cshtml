@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Project.Models.RequestViewModel>
+
+@{
+    var controllerName =
+        ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+<div class="mb-3">
+
+    <input type="text"
+           name="assigne"
+           id="assigne"
+           class="form-control"
+           placeholder="Введите исполнителя" />
+
+    <button type="button"
+            onclick="assignRequests()"
+            class="btn btn-primary mt-2">
+        Взять в работу
+    </button>
+
+</div>
+
+
+<table class="table table-striped table-bordered">
+
+    <thead>
+
+        <tr>
+            <th>ID</th>
+            <th>IP Принтера</th>
+            <th>Картридж</th>
+            <th>Местоположение (Иерархия)</th>
+            <th>Статус</th>
+            <th>Назначен</th>
+            <th></th>
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @item.Id
+                    </td>
+
+                    <td>
+                        @(string.IsNullOrEmpty(item.Ip)
+                            ? "Не указан"
+                            : item.Ip)
+                    </td>
+
+                    <td>
+                        @(string.IsNullOrEmpty(item.Cartridge)
+                            ? "Не указан"
+                            : item.Cartridge)
+                    </td>
+
+                    <td>
+                        @(string.IsNullOrEmpty(item.FullLocation)
+                            ? "Не указано"
+                            : item.FullLocation)
+                    </td>
+
+                    <td>
+                        @(item.Status == null
+                            ? "Не указан"
+                            : item.Status.ToString())
+                    </td>
+
+                    <td>
+                        @(string.IsNullOrEmpty(item.AssignedTo)
+                            ? "Не указана"
+                            : item.AssignedTo)
+                    </td>
+
+                    <td>
+
+                        <input type="checkbox"
+                               id="subscribe_@item.Id"
+                               name="subscribe"
+                               data-request-id="@item.Id"
+                               class="assign-checkbox" />
+
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+
+                <td colspan="7"
+                    class="text-center">
+                    Нет заявок для отображения
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+@section Scripts
+{
+    <script>
+        const requestController = '@controllerName';
+    </script>
+
+    <script src="~/js/request.js"></script>
+}

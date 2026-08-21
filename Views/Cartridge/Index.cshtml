@@ -1,0 +1,259 @@
+﻿@model IEnumerable<dynamic>
+
+<link rel="stylesheet" href="~/css/cartridge.css" />
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2>Список картриджей</h2>
+
+    <div class="btn-group">
+
+        <button type="button"
+                onclick="printAllCartridges()"
+                class="btn btn-primary">
+            Печать всех
+        </button>
+
+        <a asp-action="Create"
+           class="btn btn-success">
+            Добавить
+        </a>
+
+    </div>
+
+</div>
+
+
+<table class="table table-hover align-middle"
+       id="cartridgeTable">
+
+    <thead class="table-light">
+
+        <tr>
+            <th>ID</th>
+            <th>QR Код</th>
+            <th>Фирма и Модель</th>
+            <th>Статус</th>
+            <th>Местоположение</th>
+            <th>Действия</th>
+        </tr>
+
+        <tr>
+
+            <th></th>
+            <th></th>
+
+            <th>
+
+                <div class="d-flex gap-1">
+
+                    <select id="firmFilter"
+                            onchange="filterCartridgeTable()"
+                            class="form-select form-select-sm">
+
+                        <option value="">Все фирмы</option>
+
+                        @foreach (var vendor in Model
+                            .Select(i => (string)i.Firm.Name)
+                            .Distinct()
+                            .OrderBy(f => f))
+                        {
+                            <option value="@vendor">
+                                @vendor
+                            </option>
+                        }
+
+                    </select>
+
+
+                    <select id="modelFilter"
+                            onchange="filterCartridgeTable()"
+                            class="form-select form-select-sm">
+
+                        <option value="">Все модели</option>
+
+                        @foreach (var modelNumber in Model
+                            .Select(i => i.Model.ModelNumber?.ToString())
+                            .Distinct()
+                            .OrderBy(m => m))
+                        {
+                            <option value="@modelNumber">
+                                @modelNumber
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+            </th>
+
+            <th>
+
+                <select id="statusFilter"
+                        onchange="filterCartridgeTable()"
+                        class="form-select form-select-sm">
+
+                    <option value="">Все</option>
+
+                    @foreach (var status in Model
+                        .Select(i => i.Cartridg.StatusCr?.ToString())
+                        .Distinct()
+                        .OrderBy(s => s))
+                    {
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            <option value="@status">
+                                @status
+                            </option>
+                        }
+                    }
+
+                </select>
+
+            </th>
+
+            <th>
+
+                <input type="text"
+                       id="locationFilter"
+                       onkeyup="filterCartridgeTable()"
+                       class="form-control form-control-sm"
+                       placeholder="Поиск...">
+
+            </th>
+
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        @foreach (var item in Model.OrderBy(i => i.Cartridg.StatusCr?.ToString()))
+        {
+            var currentStatus =
+                item.Cartridg.StatusCr?.ToString() ?? "";
+
+            <tr class="cartridge-row"
+                data-firm="@item.Firm.Name"
+                data-model="@item.Model.ModelNumber"
+                data-status="@currentStatus"
+                data-location="@item.Cartridg.LocationCr">
+
+                <td>
+                    @item.Cartridg.IdCr
+                </td>
+
+                <td>
+
+                    @if (item.Cartridg.QrCode != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Cartridg.QrCode)"
+                             class="cartridge-qr-preview" />
+
+                        <div id="single-@item.Cartridg.IdCr"
+                             class="print-sticker">
+
+                            <div class="qr-wrapper">
+
+                                <img src="data:image/png;base64,@Convert.ToBase64String(item.Cartridg.QrCode)" />
+
+                            </div>
+
+                            <div class="info-wrapper">
+
+                                <p class="p-id">
+                                    ID: @item.Cartridg.IdCr
+                                </p>
+
+                                <p class="p-firm">
+                                    @item.Firm.Name
+                                </p>
+
+                                <p class="p-model">
+                                    @item.Model.ModelNumber
+                                </p>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </td>
+
+                <td>
+                    <strong>@item.Firm.Name</strong>
+                    @item.Model.ModelNumber
+                </td>
+
+                <td>
+                    @currentStatus
+                </td>
+
+                <td>
+                    @item.Cartridg.LocationCr
+                </td>
+
+                <td>
+
+                    <div class="d-flex gap-1">
+
+                        @if (item.Cartridg.QrCode != null)
+                        {
+                            <button type="button"
+                                    onclick="printSingleCartridge('@item.Cartridg.IdCr')"
+                                    class="btn btn-sm btn-info text-white px-3">
+                                Печать
+                            </button>
+                        }
+                        else
+                        {
+                            <a asp-action="ShowQr"
+                               asp-route-id="@item.Cartridg.IdCr"
+                               class="btn btn-sm btn-info text-white px-3">
+                                Create QR
+                            </a>
+                        }
+
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Cartridg.IdCr"
+                           class="btn btn-sm btn-primary px-3">
+                            Редактировать
+                        </a>
+
+                        <form asp-action="Delete"
+                              asp-route-id="@item.Cartridg.IdCr"
+                              method="post"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить этот картридж?')">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger px-3">
+                                Удалить
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+
+<div id="mass-print-zone"></div>
+
+
+@section Scripts
+{
+    <script src="~/js/cartridge.js"></script>
+}

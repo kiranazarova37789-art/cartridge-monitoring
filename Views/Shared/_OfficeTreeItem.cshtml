@@ -1,0 +1,56 @@
+﻿@using Project.DbModels
+@model Office
+
+@{
+    var allOffices = ViewBag.Offices as List<Office>;
+    var printersByOffice = ViewBag.PrintersByOffice as Dictionary<int, List<Printer>>;
+    var names = ViewBag.PrinterFullNames as Dictionary<int, string> ?? new Dictionary<int, string>();
+
+    var childrenOffices = allOffices?.Where(o => o.Parent == Model.Id).ToList() ?? new List<Office>();
+    var printersInThisOffice = (printersByOffice != null && printersByOffice.ContainsKey(Model.Id))
+                               ? printersByOffice[Model.Id]
+                               : new List<Printer>();
+
+    bool hasAnyContent = childrenOffices.Any() || printersInThisOffice.Any();
+}
+
+<div class="ms-4 border-start ps-2" style="border-left: 1px solid #e0e0e0 !important;">
+    @if (hasAnyContent)
+    {
+        <details open>
+            <summary style="list-style: none; cursor: pointer;" class="py-1">
+                <span class="text-primary" style="font-size: 0.6rem; vertical-align: middle;">▼</span>
+                <a href="?location_id=@Model.Id"><span class="ms-1 fw-bold" style="color: #444;">@Model.Name</span></a>
+            </summary>
+
+            <div class="ms-3">
+                @foreach (var child in childrenOffices)
+                {
+                    @await Html.PartialAsync("_OfficeTreeItem", child)
+                }
+            </div>
+        </details>
+    }
+    else
+    {
+        <div class="py-1">
+            <span class="text-muted" style="font-size: 0.6rem; vertical-align: middle; opacity: 0.5;">▼</span>
+            <span class="ms-1 fw-bold" style="color: #444;">@Model.Name</span>
+        </div>
+    }
+</div>
+
+<style>
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    summary {
+        outline: none;
+    }
+
+    .border-start {
+        margin-left: 8px !important;
+        border-color: #eee !important;
+    }
+</style>

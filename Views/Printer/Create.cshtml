@@ -1,0 +1,58 @@
+﻿@using Project.DbModels
+@model Printer
+
+<h4>Добавление принтера</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Выберите модель принтера</label>
+                <select asp-for="ModelId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Models, "Id", "Name"))">
+                    <option value="">-- Выберите модель --</option>
+                </select>
+                <span asp-validation-for="ModelId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Инвентарный / Серийный номер</label>
+                <input asp-for="Number" class="form-control" placeholder="Введите номер..." />
+                <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Выберите местоположение</label>
+                <select asp-for="OffId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Offices, "Id", "Path"))">
+                    <option value="">-- Выберите офис --</option>
+                </select>
+                <span asp-validation-for="OffId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Выберите картридж</label>
+                <select asp-for="CartridgeId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Cartridges, "Id", "Name"))">
+                    <option value="">-- Без картриджа / Установить позже --</option>
+                </select>
+                <span asp-validation-for="CartridgeId" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" asp-for="Ip" value="0.0.0.0" />
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Зарегистрировать принтер" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

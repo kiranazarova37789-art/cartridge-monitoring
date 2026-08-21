@@ -1,0 +1,77 @@
+﻿@using Project.DbModels
+@model IEnumerable<Office>
+
+@{
+    ViewData["Title"] = "Структура помещений";
+
+    async Task RenderOfficeHierarchy(Office office)
+    {
+        <details open class="mb-2">
+            <summary style="cursor:pointer;">
+                <strong>@office.Name</strong>
+
+                @if (!Model.Any(o => o.Parent == office.Id))
+                {
+                    <form asp-action="Delete" asp-controller="Office" method="post" style="display: inline; margin-left: 10px;">
+                        <input type="hidden" name="id" value="@office.Id" />
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Вы уверены, что хотите удалить: @office.Name?')">
+                            Удалить
+                        </button>
+                    </form>
+                }
+            </summary>
+
+            <div style="margin-left: 25px; border-left: 1px dashed #ccc; padding-left: 10px;">
+                @{
+                    var children = Model.Where(o => o.Parent == office.Id).ToList();
+                }
+
+                @if (children.Any())
+                {
+                    <ul style="list-style: none; padding-left: 0;">
+                        @foreach (var child in children)
+                        {
+                            <li>
+                                @{
+                                    await RenderOfficeHierarchy(child);
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+
+                @if (office.Level == 1) 
+                {
+                    <a asp-action="Create" asp-route-parentId="@office.Id" class="btn btn-sm btn-outline-secondary mt-1">+ Добавить этаж</a>
+                }
+                else if (office.Level == 2) 
+                {
+                    <a asp-action="Create" asp-route-parentId="@office.Id" class="btn btn-sm btn-outline-secondary mt-1">+ Добавить кабинет</a>
+                }
+                else if (office.Level > 2) 
+                {
+                    <a asp-action="Create" asp-route-parentId="@office.Id" class="btn btn-sm btn-outline-secondary mt-1">+ Добавить подуровень</a>
+                }
+            </div>
+        </details>
+    }
+}
+
+<h2>Структура помещений</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Добавить новый корпус (level 1)</a>
+</p>
+
+<ul style="list-style: none; padding-left: 0;">
+    @foreach (var office in Model.Where(o => o.Level == 1))
+    {
+        <li>
+            @{
+                await RenderOfficeHierarchy(office);
+            }
+        </li>
+    }
+</ul>

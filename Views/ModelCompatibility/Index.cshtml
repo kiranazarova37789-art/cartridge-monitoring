@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Управление совместимостью моделей";
+
+    var printers =
+        ViewBag.Printers as IEnumerable<dynamic>
+        ?? Enumerable.Empty<dynamic>();
+
+    int? selectedId =
+        ViewBag.SelectedPrinterId as int?;
+}
+
+<partial name="_CreateModelForm" />
+
+<div class="row">
+
+    <div class="col-md-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-dark text-white">
+                <strong>Модели принтеров</strong>
+            </div>
+
+            <div class="card-body p-0">
+
+                <div class="list-group list-group-flush"
+                     style="max-height:500px; overflow-y:auto;">
+
+                    @if (printers.Any())
+                    {
+                        @foreach (var printer in printers)
+                        {
+                            <a asp-action="Index"
+                               asp-route-id="@printer.Id"
+                               class="list-group-item list-group-item-action @(printer.Id == selectedId ? "active" : "")">
+
+                                <small class="text-muted d-block"
+                                       style="font-size:11px;">
+                                    ID: @printer.Id
+                                </small>
+
+                                <strong>@printer.FirmName</strong>
+                                @printer.ModelNumber
+
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-3 text-center text-muted">
+                            Принтеры не найдены
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-8">
+
+        <partial name="_CompatibilityEditor" />
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <script src="~/js/compatibility.js"></script>
+}

@@ -1,0 +1,85 @@
+﻿.print-sticker,
+#mass-print-zone {
+    display: none;
+}
+
+.cartridge-qr-preview {
+    width: 40px;
+    image-rendering: pixelated;
+}
+
+
+/* print */
+
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    .printable-active,
+    .printable-active * {
+        visibility: visible;
+    }
+
+    .printable-active {
+        display: flex !important;
+        flex-wrap: wrap;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .print-sticker {
+        display: flex !important;
+        align-items: center;
+        width: 50mm;
+        height: 25mm;
+        padding: 2mm;
+        border: 0.1mm solid #ccc;
+        page-break-inside: avoid;
+        background: white;
+        margin: 1mm;
+        box-sizing: border-box;
+    }
+
+    .qr-wrapper {
+        width: 20mm;
+        flex-shrink: 0;
+    }
+
+        .qr-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+    .info-wrapper {
+        margin-left: 3mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .p-id {
+        font-family: 'Arial Black', sans-serif;
+        font-size: 14pt;
+        line-height: 1.1;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .p-firm {
+        font-family: Arial, sans-serif;
+        font-size: 10pt;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .p-model {
+        font-family: Arial, sans-serif;
+        font-size: 9pt;
+        margin: 0;
+    }
+}

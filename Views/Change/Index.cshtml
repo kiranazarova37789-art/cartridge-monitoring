@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Changes Index";
+}
+
+<h1>Changes Index</h1>
+
+<div class="container">
+    <!-- Статус: Ошибка -->
+    <div class="status-card">
+        <h3>Ошибка (Ошибки: @ViewBag.ErrorCount)</h3>
+        @if (ViewBag.Error != null && ViewBag.Error.Count > 0)
+        {
+            <ul>
+                @foreach (var item in ViewBag.Error)
+                {
+                    <li>
+                        <strong>Карtridge ID:</strong> @item.IdCartridgeFk
+                        <strong>Принтер ID:</strong> @item.IdPrinterFk
+                        <strong>Комментарий:</strong> @item.CommentStatus
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Нет записей с ошибками.</p>
+        }
+    </div>
+
+    <!-- Статус: Поступили -->
+    <div class="status-card">
+        <h3>Поступили (Получено: @ViewBag.ReceivedCount)</h3>
+        @if (ViewBag.Received != null && ViewBag.Received.Count > 0)
+        {
+            <ul>
+                @foreach (var item in ViewBag.Received)
+                {
+                    <li>
+                        <strong>Карtridge ID:</strong> @item.IdCartridgeFk
+                        <strong>Принтер ID:</strong> @item.IdPrinterFk
+                        <strong>Комментарий:</strong> @item.CommentStatus
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Нет поступивших записей.</p>
+        }
+    </div>
+
+    <!-- Статус: Выполнены -->
+    <div class="status-card">
+        <h3>Выполнены (Выполнено: @ViewBag.CompletedCount)</h3>
+        @if (ViewBag.Completed != null && ViewBag.Completed.Count > 0)
+        {
+            <ul>
+                @foreach (var item in ViewBag.Completed)
+                {
+                    <li>
+                        <strong>Карtridge ID:</strong> @item.IdCartridgeFk
+                        <strong>Принтер ID:</strong> @item.IdPrinterFk
+                        <strong>Комментарий:</strong> @item.CommentStatus
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Нет выполненных записей.</p>
+        }
+    </div>
+    <div class="status-card">
+        @if (ViewBag.ErrorCount == 0 && ViewBag.ReceivedCount == 0 && ViewBag.CompletedCount == 0)
+        {
+            <div class="alert alert-info">
+                В системе пока нет изменений.
+            </div>
+        }
+    </div>
+</div>

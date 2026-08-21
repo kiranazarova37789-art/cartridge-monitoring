@@ -1,0 +1,135 @@
+﻿@{
+    var cartridges = ViewBag.Cartridges as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    int? selectedId = ViewBag.SelectedPrinterId as int?;
+}
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-secondary text-white">
+        <strong>@ViewBag.PrinterTitle</strong>
+    </div>
+
+    <div class="card-body">
+
+        @if (!selectedId.HasValue)
+        {
+            <div class="text-center py-5 text-muted">
+                <h5>Пожалуйста, выберите принтер из списка слева для настройки совместимости.</h5>
+            </div>
+        }
+        else
+        {
+            <h5 class="text-success mb-3">Совместимые картриджи</h5>
+
+            <div class="border rounded mb-4" style="max-height: 200px; overflow-y: auto;">
+
+                <table class="table table-sm table-hover mb-0 align-middle">
+
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th class="ps-3">Производитель</th>
+                            <th>Модель картриджа</th>
+                            <th class="text-center" style="width:120px;">Действие</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (cartridges.Any())
+                        {
+                            @foreach (var cartridge in cartridges)
+                            {
+                                <tr>
+
+                                    <td class="ps-3">
+                                        <strong>@cartridge.FirmName</strong>
+                                    </td>
+
+                                    <td>@cartridge.ModelNumber</td>
+
+                                    <td class="text-center">
+
+                                        <form asp-action="RemoveCompatibility"
+                                              method="post"
+                                              class="d-inline">
+
+                                            <input type="hidden"
+                                                   name="PrinterModelId"
+                                                   value="@selectedId" />
+
+                                            <input type="hidden"
+                                                   name="CartridgeModelId"
+                                                   value="@cartridge.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                Отвязать
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">
+                                    Нет связанных картриджей
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h5 class="text-primary mb-3">Добавить совместимость</h5>
+
+            <div class="border rounded p-3 bg-light">
+
+                <form asp-action="AddCompatibility"
+                      method="post"
+                      class="row g-2 align-items-center">
+
+                    <input type="hidden"
+                           name="PrinterModelId"
+                           value="@selectedId" />
+
+                    <div class="col-sm-9">
+
+                        <select name="CartridgeModelId"
+                                class="form-select form-select-sm"
+                                asp-items="(SelectList)ViewBag.AvailableCartridges"
+                                required>
+
+                            <option value="" disabled selected>
+                                -- Выберите картридж --
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-sm-3">
+
+                        <button type="submit"
+                                class="btn btn-success btn-sm w-100">
+                            Привязать
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

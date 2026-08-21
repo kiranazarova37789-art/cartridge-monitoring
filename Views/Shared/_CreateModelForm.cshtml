@@ -1,0 +1,109 @@
+﻿<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-primary text-white">
+        <strong>Добавить новую модель / устройство</strong>
+    </div>
+
+    <div class="card-body bg-light">
+
+        <form asp-action="CreateSpecification"
+              method="post"
+              class="row g-3 align-items-end">
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Производитель</label>
+
+                <select id="firmSelect"
+                        name="FirmId"
+                        class="form-select form-select-sm"
+                        required>
+
+                    <option value="" disabled selected>
+                        -- Выберите фирму --
+                    </option>
+
+                    <option value="-1" class="text-primary fw-bold">
+                        -- Новая фирма --
+                    </option>
+
+                    @if (ViewBag.VendorsList is SelectList vendors)
+                    {
+                        @foreach (var item in vendors)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+
+                </select>
+            </div>
+
+            <div class="col-md-3"
+                 id="newFirmBlock"
+                 style="display:none;">
+
+                <label class="form-label small text-danger fw-bold">
+                    Новая фирма
+                </label>
+
+                <input id="newFirmInput"
+                       name="NewFirmName"
+                       type="text"
+                       class="form-control form-control-sm border-danger"
+                       placeholder="Например: Ricoh" />
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label small fw-bold">
+                    Модель
+                </label>
+
+                <input name="ModelNumber"
+                       type="text"
+                       class="form-control form-control-sm"
+                       placeholder="Например: LaserJet 1020"
+                       required />
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label class="form-label small fw-bold">
+                    Тип
+                </label>
+
+                <select name="Type"
+                        class="form-select form-select-sm"
+                        required>
+
+                    <option value="" disabled selected>
+                        -- Тип --
+                    </option>
+
+                    <option value="@((int)Project.DbModels.EnumModelType.Printer)">
+                        Принтер
+                    </option>
+
+                    <option value="@((int)Project.DbModels.EnumModelType.Cartridge)">
+                        Картридж
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-1">
+
+                <button type="submit"
+                        class="btn btn-primary btn-sm w-100">
+                    Создать
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

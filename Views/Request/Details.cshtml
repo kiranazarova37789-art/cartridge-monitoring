@@ -1,0 +1,36 @@
+﻿@model Project.DbModels.Request
+
+@{
+    ViewData["Title"] = "Детали заявки";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+@if (Model == null)
+{
+    <p>Заявка не найдена.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <tr>
+            <th>ID</th>
+            <td>@Model.IdZv</td>
+        </tr>
+        <tr>
+            <th>Статус</th>
+            <td>@Model.StatusZv</td>
+        </tr>
+        <tr>
+            <th>Модель картриджа</th>
+            <td>@Model.CartridgeModel</td>
+        </tr>
+        <tr>
+            <th>IP принтера</th>
+            <td>@Model.IpPrinter</td>
+        </tr>
+    </table>
+
+    <a href="@Url.Action("Index")" class="btn btn-primary">Назад к списку</a>
+}

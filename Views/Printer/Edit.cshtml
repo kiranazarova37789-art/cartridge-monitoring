@@ -1,0 +1,72 @@
+﻿@using Project.DbModels
+@model Printer
+
+@{
+    ViewData["Title"] = "Редактирование принтера";
+}
+
+<h4>Редактирование принтера</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="IdPrint" />
+            <input type="hidden" asp-for="ModelId" />
+            <input type="hidden" asp-for="Number" />
+            <input type="hidden" asp-for="Ip" />
+
+            <div class="form-group mb-3">
+                <label class="control-label fw-bold">Модель принтера</label>
+                <div class="form-control bg-light text-muted">
+                    <i class="bi bi-tag-fill me-1"></i> @ViewBag.ModelDisplayName
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label fw-bold">Инвентарный / Серийный номер</label>
+                <div class="form-control bg-light text-muted">
+                    @Model.Number
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label text-primary fw-bold">Текущее местоположение</label>
+                <select asp-for="OffId" class="form-control border-primary"
+                        asp-items="@(new SelectList(ViewBag.Offices, "Id", "Path"))">
+                    <option value="">-- Выберите офис --</option>
+                </select>
+                <span asp-validation-for="OffId" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label text-primary fw-bold">Установленный картридж</label>
+                <select asp-for="CartridgeId" class="form-control border-primary"
+                        asp-items="@(new SelectList(ViewBag.Cartridges, "Id", "Name"))">
+                    <option value="">-- Снять картридж / Нет в наличии --</option>
+                </select>
+                <span asp-validation-for="CartridgeId" class="text-danger small"></span>
+                <p class="text-muted extra-small mt-1" style="font-size: 0.75rem;">
+                    * В списке отображаются только свободные картриджи модели <strong>@ViewBag.ModelDisplayName</strong>
+                </p>
+            </div>
+
+            <div class="form-group mt-4 pt-2">
+                <button type="submit" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-save"></i> Сохранить изменения
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Назад
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
